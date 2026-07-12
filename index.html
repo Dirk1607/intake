@@ -1,0 +1,261 @@
+<!DOCTYPE html>
+<html lang="nl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Intake — Ariadne training &amp; coaching</title>
+<script src="https://cdn.jsdelivr.net/npm/@emailjs/browser@4/dist/email.min.js"></script>
+<meta name="description" content="Intake-vragenlijst voor het leertraject 'Leidinggeven aan verandering op de werkvloer' — Ariadne training & coaching.">
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+:root{
+  --dark:#1A2E4A;--mid:#2E5FA3;--light:#D6E4F7;
+  --border:#e2e8f0;--surface:#f8fafc;--text:#1e293b;--muted:#64748b;
+  --radius:10px;--radius-lg:14px;
+}
+body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif;background:#f0f4f8;color:var(--text);min-height:100vh;padding:24px 16px}
+.container{max-width:660px;margin:0 auto}
+.card{background:#fff;border-radius:var(--radius-lg);border:1px solid var(--border);padding:28px;margin-bottom:16px;box-shadow:0 1px 3px rgba(0,0,0,.06)}
+/* HEADER */
+.site-header{display:flex;align-items:center;gap:20px;margin-bottom:24px;padding:20px 24px;background:#fff;border-radius:14px;border:1px solid #e2e8f0;box-shadow:0 1px 4px rgba(0,0,0,.07)}
+.logo-fallback{width:56px;height:56px;background:var(--dark);border-radius:10px;display:flex;align-items:center;justify-content:center;flex-shrink:0}
+.logo-fallback span{color:#fff;font-size:9px;font-weight:700;letter-spacing:.3px;line-height:1.4;text-align:center}
+.site-title{font-size:20px;font-weight:700;color:var(--dark)}
+.site-sub{font-size:13px;color:var(--muted);margin-top:3px;line-height:1.4}
+.step{display:none}.step.active{display:block}
+/* INTRO */
+.intro-box{background:var(--surface);border-radius:var(--radius);border:1px solid var(--border);padding:20px;margin-bottom:20px}
+.intro-box p{font-size:14px;color:var(--muted);line-height:1.75;margin-bottom:10px}
+.intro-box p:last-child{margin-bottom:0}
+.traject-tag{display:inline-block;font-size:12px;font-weight:700;color:var(--dark);background:var(--light);border-radius:20px;padding:5px 14px;margin-bottom:14px}
+/* FORM */
+.section-label{font-size:11px;font-weight:700;color:var(--dark);letter-spacing:1px;text-transform:uppercase;margin:6px 0 14px;padding-bottom:7px;border-bottom:2px solid var(--border)}
+.field-row{display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-bottom:14px}
+.field-group{display:flex;flex-direction:column;gap:5px;margin-bottom:14px}
+.field-group label{font-size:13px;font-weight:600;color:var(--text)}
+.field-group .hint{font-size:12px;color:var(--muted);font-weight:400;line-height:1.6;margin-top:-1px}
+.field-group input,.field-group textarea{padding:11px 13px;border:1.5px solid var(--border);border-radius:8px;font-size:14px;color:var(--text);background:#fff;transition:border-color .15s;font-family:inherit;width:100%}
+.field-group textarea{min-height:110px;resize:vertical;line-height:1.6}
+.field-group input:focus,.field-group textarea:focus{outline:none;border-color:var(--dark)}
+.q-num{color:var(--mid);font-weight:700;margin-right:4px}
+.tip{background:#f0f9ff;border:1.5px solid #bae6fd;border-radius:var(--radius);padding:16px 18px;margin:8px 0 22px;font-size:13px;color:#0369a1;line-height:1.7}
+.tip strong{color:var(--dark)}
+/* NAV */
+.nav-row{display:flex;justify-content:flex-end;align-items:center;margin-top:8px;gap:12px;padding-top:16px;border-top:1px solid var(--border)}
+.btn{padding:12px 26px;border-radius:8px;border:1.5px solid var(--border);background:#fff;cursor:pointer;font-size:14px;font-weight:600;color:var(--text);transition:all .15s}
+.btn:hover{background:var(--surface)}
+.btn-primary{background:var(--dark);color:#fff;border-color:var(--dark)}
+.btn-primary:hover{background:var(--mid);border-color:var(--mid)}
+.btn-primary:disabled{opacity:.6;cursor:not-allowed}
+.warn{font-size:13px;color:#AA0000;margin-bottom:14px;padding:10px 14px;background:#FFE0E0;border-radius:8px;border:1px solid #fca5a5;display:none}
+.warn.show{display:block}
+/* BEVESTIGING */
+.r-hero{background:linear-gradient(135deg,var(--dark) 0%,var(--mid) 100%);border-radius:var(--radius-lg);padding:28px;margin-bottom:20px;color:#fff}
+.r-hero h1{font-size:22px;font-weight:700;margin-bottom:6px}
+.r-hero p{font-size:14px;opacity:.85;line-height:1.6}
+.r-block{background:#fff;border:1.5px solid var(--border);border-radius:var(--radius);padding:18px;margin-bottom:12px}
+.r-block .lbl{font-size:11px;font-weight:700;color:var(--dark);text-transform:uppercase;letter-spacing:.5px;margin-bottom:6px}
+.r-block .val{font-size:14px;color:var(--text);line-height:1.7;white-space:pre-wrap}
+.r-meta{display:grid;grid-template-columns:repeat(2,1fr);gap:10px;margin-bottom:16px}
+@media print{.no-print{display:none!important}.card{box-shadow:none;border:none}body{background:#fff}}
+@media(max-width:560px){
+  .field-row{grid-template-columns:1fr}
+  .r-meta{grid-template-columns:1fr}
+  .site-header{gap:14px;padding:16px}
+  .site-title{font-size:18px}
+}
+</style>
+</head>
+<body>
+<div class="container">
+
+<div class="site-header">
+  <img src="LogoAriadne.png" alt="Ariadne training & coaching" style="height:64px;width:auto;max-width:260px;display:block;flex-shrink:0;border-radius:6px" onerror="this.onerror=null;this.src='LogoAriadne.svg'">
+  <div>
+    <div class="site-title">Intake-vragenlijst</div>
+    <div class="site-sub">Ter voorbereiding van jouw leertraject</div>
+  </div>
+</div>
+
+<!-- STAP 0: Intro + formulier -->
+<div class="step active" id="step-0">
+  <div class="card">
+    <span class="traject-tag">Leidinggeven aan verandering op de werkvloer</span>
+    <div class="intro-box">
+      <p>Fijn dat je binnenkort deelneemt aan dit leertraject. Als voorbereiding vragen we je onderstaande vragen in te vullen. Je antwoorden helpen ons om de opleiding zo goed mogelijk af te stemmen op jouw situatie en doelstellingen. Het geeft jou ook inzicht in je eigen verwachtingen en hoe je het succes mee kan bepalen.</p>
+      <p>Het is <strong>geen</strong> multiple choice, denk er even rustig over na. Met jouw antwoorden gaan we aan de slag, zodat we tijdens de opleiding kunnen vertrekken van real-life situaties. Bovendien helpt deze reflectie vooraf om jouw leervragen helder te stellen. Je antwoorden worden discreet behandeld.</p>
+      <p>Invullen duurt 10 tot 15 minuten.</p>
+    </div>
+
+    <div class="warn" id="warn">Vul minstens je naam en een geldig e-mailadres in voor je verzendt.</div>
+
+    <div class="section-label">Jouw reflectievragen</div>
+
+    <div class="field-group">
+      <label><span class="q-num">1.</span>Beschrijf kort de verandering(en) waaraan jij leiding moet geven. Welke aspecten daarvan geven je de meeste kopzorgen?</label>
+      <textarea id="q1" placeholder="Jouw antwoord…"></textarea>
+    </div>
+    <div class="field-group">
+      <label><span class="q-num">2.</span>Welke uitdaging(en) rond menselijke interactie wil je aanpakken (binnen jouw team/organisatie)?</label>
+      <textarea id="q2" placeholder="Jouw antwoord…"></textarea>
+    </div>
+    <div class="field-group">
+      <label><span class="q-num">3.</span>Met wie bespreek je (intern in de organisatie) jouw doelen en resultaten van de opleiding?</label>
+      <textarea id="q3" placeholder="Jouw antwoord…"></textarea>
+    </div>
+    <div class="field-group">
+      <label><span class="q-num">4.</span>Wat is -volgens jou zelf- jouw grootste kracht "op de werkvloer"? En... wat zou het antwoord op deze vraag zijn, als je collega's die beantwoorden?</label>
+      <textarea id="q4" placeholder="Jouw antwoord…"></textarea>
+    </div>
+
+    <div class="tip">
+      <strong>Tip — je business case.</strong> Denk al eens na over een business case die je wil inbrengen tijdens de opleiding. Door de verschillende werkvormen en modellen hierop toe te passen, ga je naar huis met inzichten die ertoe doen en die jou helpen bij je eigen uitdaging. Win-win dus.
+    </div>
+
+    <div class="section-label">Jouw gegevens</div>
+    <p class="hint" style="font-size:12px;color:var(--muted);line-height:1.6;margin:-6px 0 14px">Vul jouw gegevens in, en die van diegene die je in jouw leertraject zal ondersteunen.</p>
+
+    <div class="field-row">
+      <div class="field-group" style="margin-bottom:0">
+        <label>Naam</label>
+        <input type="text" id="naam" placeholder="Voor- en achternaam" autocomplete="name">
+      </div>
+      <div class="field-group" style="margin-bottom:0">
+        <label>E-mailadres</label>
+        <input type="email" id="email" placeholder="jij@bedrijf.be" autocomplete="email">
+      </div>
+    </div>
+    <div class="field-row">
+      <div class="field-group" style="margin-bottom:0">
+        <label>Naam leidinggevende</label>
+        <input type="text" id="mgrNaam" placeholder="Voor- en achternaam">
+      </div>
+      <div class="field-group" style="margin-bottom:0">
+        <label>E-mailadres leidinggevende</label>
+        <input type="email" id="mgrEmail" placeholder="leidinggevende@bedrijf.be">
+      </div>
+    </div>
+
+    <div class="nav-row">
+      <button class="btn btn-primary" id="verzendBtn" onclick="verzenden()">Verzenden →</button>
+    </div>
+  </div>
+</div>
+
+<!-- STAP 1: Bevestiging + overzicht -->
+<div class="step" id="step-1">
+  <div class="r-hero">
+    <h1>Bedankt, <span id="bevNaam">deelnemer</span>! 🎉</h1>
+    <p>Je intake is verzonden naar Ariadne, met een kopie naar jouw e-mailadres. We nemen je antwoorden mee als vertrekpunt voor de opleiding. Hieronder vind je een overzicht van wat je hebt ingevuld, je kan dit afdrukken of bewaren.</p>
+  </div>
+  <div class="card">
+    <div class="r-meta">
+      <div class="r-block" style="margin-bottom:0"><div class="lbl">Naam</div><div class="val" id="ovNaam"></div></div>
+      <div class="r-block" style="margin-bottom:0"><div class="lbl">E-mailadres</div><div class="val" id="ovEmail"></div></div>
+      <div class="r-block" style="margin-bottom:0"><div class="lbl">Leidinggevende</div><div class="val" id="ovMgr"></div></div>
+      <div class="r-block" style="margin-bottom:0"><div class="lbl">E-mail leidinggevende</div><div class="val" id="ovMgrEmail"></div></div>
+    </div>
+    <div id="ovVragen"></div>
+    <div class="nav-row no-print">
+      <button class="btn" onclick="window.print()">🖨 Afdrukken / bewaren</button>
+    </div>
+  </div>
+  <div style="text-align:center;font-size:12px;color:var(--muted);line-height:1.7;padding:8px 0">
+    Vragen? Neem gerust contact op met Ilse Vantilborgh — <a href="mailto:ilse@ariadnebvba.be" style="color:var(--mid)">ilse@ariadnebvba.be</a><br>
+    <span style="opacity:.6">&copy; Ariadne training &amp; coaching &middot; v0.1</span>
+  </div>
+</div>
+
+</div>
+
+<script>
+// ── EMAILJS CONFIGURATIE ──────────────────────────────────────────────
+// Hergebruikt het EmailJS-account van The Next Level (service TNL_Service).
+// TODO (Dirk in EmailJS): maak 1 nieuwe template aan en zet het ID hieronder.
+//   De mail gaat ALTIJD naar ilse@ariadnebvba.be ({{to_email}}),
+//   met de invuller in CC ({{cc_email}}).
+// Zolang het template-ID een placeholder is, faalt de mail stil (formulier werkt wel).
+const EMAILJS_SERVICE = 'TNL_Service';
+const EMAILJS_PUBLICKEY = 'PcB6qndxr2wKF3d-w';
+const INTAKE_TEMPLATE = 'template_INTAKE';   // ← vervang na aanmaken
+const ARIADNE_EMAIL = 'ilse@ariadnebvba.be';
+const TRAJECT = 'Leidinggeven aan verandering op de werkvloer';
+
+if(typeof emailjs!=='undefined'){ emailjs.init({publicKey:EMAILJS_PUBLICKEY}); }
+
+const $ = id => document.getElementById(id);
+function geldigEmail(e){ return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(e); }
+
+const VRAGEN = [
+  'Beschrijf kort de verandering(en) waaraan jij leiding moet geven. Welke aspecten daarvan geven je de meeste kopzorgen?',
+  'Welke uitdaging(en) rond menselijke interactie wil je aanpakken (binnen jouw team/organisatie)?',
+  'Met wie bespreek je (intern in de organisatie) jouw doelen en resultaten van de opleiding?',
+  'Wat is -volgens jou zelf- jouw grootste kracht "op de werkvloer"? En... wat zou het antwoord op deze vraag zijn, als je collega\'s die beantwoorden?'
+];
+
+function verzamel(){
+  return {
+    naam:$('naam').value.trim(),
+    email:$('email').value.trim(),
+    mgrNaam:$('mgrNaam').value.trim(),
+    mgrEmail:$('mgrEmail').value.trim(),
+    antwoorden:[$('q1').value.trim(),$('q2').value.trim(),$('q3').value.trim(),$('q4').value.trim()]
+  };
+}
+
+function verzenden(){
+  const d = verzamel();
+  if(!d.naam || !geldigEmail(d.email)){
+    $('warn').classList.add('show');
+    window.scrollTo({top:0,behavior:'smooth'});
+    return;
+  }
+  $('warn').classList.remove('show');
+  const btn = $('verzendBtn');
+  btn.disabled = true; btn.textContent = 'Verzenden…';
+
+  const antwoordenTxt = VRAGEN.map((v,i)=>`${i+1}. ${v}\n${d.antwoorden[i]||'(niet ingevuld)'}`).join('\n\n');
+  const params = {
+    to_email: ARIADNE_EMAIL,
+    cc_email: d.email,
+    traject: TRAJECT,
+    naam: d.naam,
+    email: d.email,
+    mgr_naam: d.mgrNaam || '(niet ingevuld)',
+    mgr_email: d.mgrEmail || '(niet ingevuld)',
+    vraag_1: d.antwoorden[0]||'(niet ingevuld)',
+    vraag_2: d.antwoorden[1]||'(niet ingevuld)',
+    vraag_3: d.antwoorden[2]||'(niet ingevuld)',
+    vraag_4: d.antwoorden[3]||'(niet ingevuld)',
+    antwoorden: antwoordenTxt,
+    datum: new Date().toLocaleDateString('nl-BE',{day:'2-digit',month:'long',year:'numeric'})
+  };
+
+  const klaar = () => toonBevestiging(d);
+
+  if(typeof emailjs==='undefined' || !emailjs.send){ klaar(); return; }
+
+  // Eén mail naar Ilse, met de invuller in CC
+  emailjs.send(EMAILJS_SERVICE, INTAKE_TEMPLATE, params)
+    .catch(err=>console.log('EmailJS fout:',err))
+    .finally(klaar);
+}
+
+function toonBevestiging(d){
+  $('bevNaam').textContent = d.naam.split(' ')[0] || d.naam;
+  $('ovNaam').textContent = d.naam;
+  $('ovEmail').textContent = d.email;
+  $('ovMgr').textContent = d.mgrNaam || '—';
+  $('ovMgrEmail').textContent = d.mgrEmail || '—';
+  $('ovVragen').innerHTML = VRAGEN.map((v,i)=>
+    `<div class="r-block"><div class="lbl">Vraag ${i+1}</div>`+
+    `<div class="val" style="color:var(--muted);font-weight:600;margin-bottom:8px">${v}</div>`+
+    `<div class="val">${(d.antwoorden[i]||'(niet ingevuld)').replace(/</g,'&lt;')}</div></div>`
+  ).join('');
+  $('step-0').classList.remove('active');
+  $('step-1').classList.add('active');
+  window.scrollTo({top:0,behavior:'smooth'});
+}
+</script>
+</body>
+</html>
