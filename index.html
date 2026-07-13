@@ -72,7 +72,7 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif;b
 <div class="site-header">
   <img src="LogoAriadne.png" alt="Ariadne training & coaching" style="height:64px;width:auto;max-width:260px;display:block;flex-shrink:0;border-radius:6px" onerror="this.onerror=null;this.src='LogoAriadne.svg'">
   <div>
-    <div class="site-title">Intake-vragenlijst <span style="font-size:12px;font-weight:400;color:#b8c1cf;letter-spacing:.3px">v1.1</span></div>
+    <div class="site-title">Intake-vragenlijst <span style="font-size:12px;font-weight:400;color:#b8c1cf;letter-spacing:.3px">v1.2</span></div>
     <div class="site-sub">Ter voorbereiding van jouw leertraject</div>
   </div>
 </div>
@@ -145,7 +145,7 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif;b
 <!-- STAP 1: Bevestiging + overzicht -->
 <div class="step" id="step-1">
   <div class="r-hero">
-    <h1 id="bevTitel">Bedankt, <span id="bevNaam">deelnemer</span>! 🎉</h1>
+    <h1 id="bevTitel">Bedankt, <span id="bevNaam">deelnemer</span>!</h1>
     <p id="bevText">Je intake is verzonden naar Ariadne, met een kopie naar jouw e-mailadres. We nemen je antwoorden mee als vertrekpunt voor de opleiding. Hieronder vind je een overzicht, je kan dit afdrukken of bewaren.</p>
   </div>
   <div class="card no-print" id="mailFallback" style="border-color:#bae6fd;background:#f0f9ff;display:none">
@@ -171,7 +171,7 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif;b
   </div>
   <div style="text-align:center;font-size:12px;color:var(--muted);line-height:1.7;padding:8px 0">
     Vragen? Neem gerust contact op met Ilse Vantilborgh — <a href="mailto:ilse@ariadnebvba.be" style="color:var(--mid)">ilse@ariadnebvba.be</a><br>
-    <span style="opacity:.6">&copy; Ariadne training &amp; coaching &middot; v1.1</span>
+    <span style="opacity:.6">&copy; Ariadne training &amp; coaching &middot; v1.2</span>
   </div>
 </div>
 
@@ -296,7 +296,7 @@ function fallbackKopie(done){
 function toonBevestiging(d, verzonden){
   const voornaam = d.naam.split(' ')[0] || d.naam;
   if(verzonden){
-    $('bevTitel').innerHTML = `Bedankt, ${voornaam}! 🎉`;
+    $('bevTitel').innerHTML = `Bedankt, ${voornaam}!`;
     $('bevText').textContent = 'Je intake is verzonden naar Ariadne, met een kopie naar jouw e-mailadres. We nemen je antwoorden mee als vertrekpunt voor de opleiding. Hieronder vind je een overzicht, je kan dit afdrukken of bewaren.';
     $('mailFallback').style.display = 'none';
   } else {
