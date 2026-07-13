@@ -4,6 +4,7 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Intake — Ariadne training &amp; coaching</title>
+<script src="https://cdn.jsdelivr.net/npm/@emailjs/browser@4/dist/email.min.js"></script>
 <meta name="description" content="Intake-vragenlijst voor het leertraject 'Leidinggeven aan verandering op de werkvloer' — Ariadne training & coaching.">
 <style>
 *{box-sizing:border-box;margin:0;padding:0}
@@ -144,15 +145,15 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif;b
 <!-- STAP 1: Bevestiging + overzicht -->
 <div class="step" id="step-1">
   <div class="r-hero">
-    <h1>Bijna klaar, <span id="bevNaam">deelnemer</span>! ✉️</h1>
-    <p>Je e-mailprogramma is geopend met je antwoorden al ingevuld. <strong>Klik daar nog op "Verzenden"</strong> om je intake naar Ariadne te versturen. Je staat zelf in CC, dus je houdt een kopie.</p>
+    <h1 id="bevTitel">Bedankt, <span id="bevNaam">deelnemer</span>! 🎉</h1>
+    <p id="bevText">Je intake is verzonden naar Ariadne, met een kopie naar jouw e-mailadres. We nemen je antwoorden mee als vertrekpunt voor de opleiding. Hieronder vind je een overzicht, je kan dit afdrukken of bewaren.</p>
   </div>
-  <div class="card no-print" style="border-color:#bae6fd;background:#f0f9ff">
+  <div class="card no-print" id="mailFallback" style="border-color:#bae6fd;background:#f0f9ff;display:none">
     <div style="font-size:14px;color:#0369a1;line-height:1.7;margin-bottom:14px">
-      <strong>Opende er geen e-mailprogramma?</strong> Dat gebeurt soms als er geen mailapp is ingesteld. Klik dan hieronder om het opnieuw te proberen, of kopieer je antwoorden en mail ze zelf naar <a href="mailto:ilse@ariadnebvba.be" style="color:var(--mid)">ilse@ariadnebvba.be</a>.
+      <strong>Kwam je intake niet aan?</strong> Klik hieronder om je e-mailprogramma te openen met alles ingevuld, of kopieer je antwoorden en mail ze zelf naar <a href="mailto:ilse@ariadnebvba.be" style="color:var(--mid)">ilse@ariadnebvba.be</a>.
     </div>
     <div style="display:flex;gap:10px;flex-wrap:wrap">
-      <button class="btn btn-primary" onclick="openMail()">✉️ Mail opnieuw openen</button>
+      <button class="btn btn-primary" onclick="openMail()">✉️ Mail openen</button>
       <button class="btn" id="kopieerBtn" onclick="kopieerAntwoorden()">📋 Antwoorden kopiëren</button>
     </div>
   </div>
@@ -170,19 +171,28 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif;b
   </div>
   <div style="text-align:center;font-size:12px;color:var(--muted);line-height:1.7;padding:8px 0">
     Vragen? Neem gerust contact op met Ilse Vantilborgh — <a href="mailto:ilse@ariadnebvba.be" style="color:var(--mid)">ilse@ariadnebvba.be</a><br>
-    <span style="opacity:.6">&copy; Ariadne training &amp; coaching &middot; v0.2</span>
+    <span style="opacity:.6">&copy; Ariadne training &amp; coaching &middot; v0.3</span>
   </div>
 </div>
 
 </div>
 
 <script>
-// ── VERZENDEN VIA MAILTO ──────────────────────────────────────────────
-// Gratis oplossing: bij "Verzenden" opent het mailprogramma van de invuller
-// met alles al ingevuld (aan Ilse, invuller in CC). De invuller klikt zelf
-// nog op "verzenden" in zijn mailclient. Geen account/limiet nodig.
+// ── EMAILJS-CONFIGURATIE (eigen gratis account van Ariadne) ───────────
+// Vul de 3 waarden uit Ilse's EmailJS-account in:
+//   PUBLICKEY : Account → General → Public Key
+//   SERVICE   : Email Services → (jouw service) → Service ID
+//   TEMPLATE  : Email Templates → (jouw template) → Template ID
+// De mail gaat naar ilse@ariadnebvba.be ({{to_email}}), invuller in CC ({{cc_email}}).
+// Als de verzending faalt (bv. quota op), valt de app automatisch terug op mailto.
+const EMAILJS_PUBLICKEY = 'FPJ6OnzSnOqIrPpYv';
+const EMAILJS_SERVICE   = 'service_rjqzolm';
+const EMAILJS_TEMPLATE  = '22ikqe8';
 const ARIADNE_EMAIL = 'ilse@ariadnebvba.be';
 const TRAJECT = 'Leidinggeven aan verandering op de werkvloer';
+
+const emailjsKlaar = typeof emailjs!=='undefined' && !EMAILJS_PUBLICKEY.startsWith('PLAK_');
+if(emailjsKlaar){ emailjs.init({publicKey:EMAILJS_PUBLICKEY}); }
 
 const $ = id => document.getElementById(id);
 function geldigEmail(e){ return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(e); }
@@ -239,11 +249,27 @@ function verzenden(){
     + `&body=${encodeURIComponent(body)}`;
   laatsteBody = `Aan: ${ARIADNE_EMAIL}\r\nCC: ${d.email}\r\nOnderwerp: ${subject}\r\n\r\n${body}`;
 
-  // Mailprogramma openen
-  openMail();
+  const btn = $('verzendBtn');
+  btn.disabled = true; btn.textContent = 'Verzenden…';
 
-  // Bevestigingsscherm tonen (met kopieer-terugval)
-  toonBevestiging(d);
+  // Primair: automatisch verzenden via EmailJS. Bij fout: terugval op mailto.
+  if(emailjsKlaar){
+    const params = {
+      to_email: ARIADNE_EMAIL, cc_email: d.email, traject: TRAJECT, datum: datum,
+      naam: d.naam, email: d.email,
+      mgr_naam: d.mgrNaam || '(niet ingevuld)', mgr_email: d.mgrEmail || '(niet ingevuld)',
+      vraag_1: d.antwoorden[0]||'(niet ingevuld)', vraag_2: d.antwoorden[1]||'(niet ingevuld)',
+      vraag_3: d.antwoorden[2]||'(niet ingevuld)', vraag_4: d.antwoorden[3]||'(niet ingevuld)',
+      antwoorden: body
+    };
+    emailjs.send(EMAILJS_SERVICE, EMAILJS_TEMPLATE, params)
+      .then(()=>toonBevestiging(d, true))
+      .catch(err=>{ console.log('EmailJS fout, terugval mailto:',err); openMail(); toonBevestiging(d, false); });
+  } else {
+    // Geen EmailJS geconfigureerd: mailto-modus
+    openMail();
+    toonBevestiging(d, false);
+  }
 }
 
 let laatsteMailto = '', laatsteBody = '';
@@ -267,8 +293,17 @@ function fallbackKopie(done){
   document.body.removeChild(ta);
 }
 
-function toonBevestiging(d){
-  $('bevNaam').textContent = d.naam.split(' ')[0] || d.naam;
+function toonBevestiging(d, verzonden){
+  const voornaam = d.naam.split(' ')[0] || d.naam;
+  if(verzonden){
+    $('bevTitel').innerHTML = `Bedankt, ${voornaam}! 🎉`;
+    $('bevText').textContent = 'Je intake is verzonden naar Ariadne, met een kopie naar jouw e-mailadres. We nemen je antwoorden mee als vertrekpunt voor de opleiding. Hieronder vind je een overzicht, je kan dit afdrukken of bewaren.';
+    $('mailFallback').style.display = 'none';
+  } else {
+    $('bevTitel').innerHTML = `Bijna klaar, ${voornaam}! ✉️`;
+    $('bevText').innerHTML = 'Je e-mailprogramma is geopend met je antwoorden al ingevuld. <strong>Klik daar nog op "Verzenden"</strong> om je intake naar Ariadne te sturen. Je staat zelf in CC, dus je houdt een kopie.';
+    $('mailFallback').style.display = 'block';
+  }
   $('ovNaam').textContent = d.naam;
   $('ovEmail').textContent = d.email;
   $('ovMgr').textContent = d.mgrNaam || '—';
