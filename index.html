@@ -4,7 +4,6 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Intake — Ariadne training &amp; coaching</title>
-<script src="https://cdn.jsdelivr.net/npm/@emailjs/browser@4/dist/email.min.js"></script>
 <meta name="description" content="Intake-vragenlijst voor het leertraject 'Leidinggeven aan verandering op de werkvloer' — Ariadne training & coaching.">
 <style>
 *{box-sizing:border-box;margin:0;padding:0}
@@ -145,8 +144,17 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif;b
 <!-- STAP 1: Bevestiging + overzicht -->
 <div class="step" id="step-1">
   <div class="r-hero">
-    <h1>Bedankt, <span id="bevNaam">deelnemer</span>! 🎉</h1>
-    <p>Je intake is verzonden naar Ariadne, met een kopie naar jouw e-mailadres. We nemen je antwoorden mee als vertrekpunt voor de opleiding. Hieronder vind je een overzicht van wat je hebt ingevuld, je kan dit afdrukken of bewaren.</p>
+    <h1>Bijna klaar, <span id="bevNaam">deelnemer</span>! ✉️</h1>
+    <p>Je e-mailprogramma is geopend met je antwoorden al ingevuld. <strong>Klik daar nog op "Verzenden"</strong> om je intake naar Ariadne te versturen. Je staat zelf in CC, dus je houdt een kopie.</p>
+  </div>
+  <div class="card no-print" style="border-color:#bae6fd;background:#f0f9ff">
+    <div style="font-size:14px;color:#0369a1;line-height:1.7;margin-bottom:14px">
+      <strong>Opende er geen e-mailprogramma?</strong> Dat gebeurt soms als er geen mailapp is ingesteld. Klik dan hieronder om het opnieuw te proberen, of kopieer je antwoorden en mail ze zelf naar <a href="mailto:ilse@ariadnebvba.be" style="color:var(--mid)">ilse@ariadnebvba.be</a>.
+    </div>
+    <div style="display:flex;gap:10px;flex-wrap:wrap">
+      <button class="btn btn-primary" onclick="openMail()">✉️ Mail opnieuw openen</button>
+      <button class="btn" id="kopieerBtn" onclick="kopieerAntwoorden()">📋 Antwoorden kopiëren</button>
+    </div>
   </div>
   <div class="card">
     <div class="r-meta">
@@ -162,26 +170,19 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif;b
   </div>
   <div style="text-align:center;font-size:12px;color:var(--muted);line-height:1.7;padding:8px 0">
     Vragen? Neem gerust contact op met Ilse Vantilborgh — <a href="mailto:ilse@ariadnebvba.be" style="color:var(--mid)">ilse@ariadnebvba.be</a><br>
-    <span style="opacity:.6">&copy; Ariadne training &amp; coaching &middot; v0.1</span>
+    <span style="opacity:.6">&copy; Ariadne training &amp; coaching &middot; v0.2</span>
   </div>
 </div>
 
 </div>
 
 <script>
-// ── EMAILJS CONFIGURATIE ──────────────────────────────────────────────
-// Hergebruikt het EmailJS-account van The Next Level (service TNL_Service).
-// TODO (Dirk in EmailJS): maak 1 nieuwe template aan en zet het ID hieronder.
-//   De mail gaat ALTIJD naar ilse@ariadnebvba.be ({{to_email}}),
-//   met de invuller in CC ({{cc_email}}).
-// Zolang het template-ID een placeholder is, faalt de mail stil (formulier werkt wel).
-const EMAILJS_SERVICE = 'TNL_Service';
-const EMAILJS_PUBLICKEY = 'PcB6qndxr2wKF3d-w';
-const INTAKE_TEMPLATE = 'template_INTAKE';   // ← vervang na aanmaken
+// ── VERZENDEN VIA MAILTO ──────────────────────────────────────────────
+// Gratis oplossing: bij "Verzenden" opent het mailprogramma van de invuller
+// met alles al ingevuld (aan Ilse, invuller in CC). De invuller klikt zelf
+// nog op "verzenden" in zijn mailclient. Geen account/limiet nodig.
 const ARIADNE_EMAIL = 'ilse@ariadnebvba.be';
 const TRAJECT = 'Leidinggeven aan verandering op de werkvloer';
-
-if(typeof emailjs!=='undefined'){ emailjs.init({publicKey:EMAILJS_PUBLICKEY}); }
 
 const $ = id => document.getElementById(id);
 function geldigEmail(e){ return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(e); }
@@ -211,34 +212,59 @@ function verzenden(){
     return;
   }
   $('warn').classList.remove('show');
-  const btn = $('verzendBtn');
-  btn.disabled = true; btn.textContent = 'Verzenden…';
 
-  const antwoordenTxt = VRAGEN.map((v,i)=>`${i+1}. ${v}\n${d.antwoorden[i]||'(niet ingevuld)'}`).join('\n\n');
-  const params = {
-    to_email: ARIADNE_EMAIL,
-    cc_email: d.email,
-    traject: TRAJECT,
-    naam: d.naam,
-    email: d.email,
-    mgr_naam: d.mgrNaam || '(niet ingevuld)',
-    mgr_email: d.mgrEmail || '(niet ingevuld)',
-    vraag_1: d.antwoorden[0]||'(niet ingevuld)',
-    vraag_2: d.antwoorden[1]||'(niet ingevuld)',
-    vraag_3: d.antwoorden[2]||'(niet ingevuld)',
-    vraag_4: d.antwoorden[3]||'(niet ingevuld)',
-    antwoorden: antwoordenTxt,
-    datum: new Date().toLocaleDateString('nl-BE',{day:'2-digit',month:'long',year:'numeric'})
-  };
+  // Mailtekst opbouwen
+  const datum = new Date().toLocaleDateString('nl-BE',{day:'2-digit',month:'long',year:'numeric'});
+  const regels = [
+    `Intake - ${TRAJECT}`,
+    `Ingevuld op ${datum}`,
+    ``,
+    `--- GEGEVENS ---`,
+    `Naam: ${d.naam}`,
+    `E-mailadres: ${d.email}`,
+    `Leidinggevende: ${d.mgrNaam || '(niet ingevuld)'}`,
+    `E-mail leidinggevende: ${d.mgrEmail || '(niet ingevuld)'}`,
+    ``,
+    `--- ANTWOORDEN ---`
+  ];
+  VRAGEN.forEach((v,i)=>{
+    regels.push(``, `${i+1}. ${v}`, `${d.antwoorden[i] || '(niet ingevuld)'}`);
+  });
+  const body = regels.join('\r\n');
+  const subject = `Intake - ${d.naam} (${TRAJECT})`;
 
-  const klaar = () => toonBevestiging(d);
+  laatsteMailto = `mailto:${encodeURIComponent(ARIADNE_EMAIL)}`
+    + `?cc=${encodeURIComponent(d.email)}`
+    + `&subject=${encodeURIComponent(subject)}`
+    + `&body=${encodeURIComponent(body)}`;
+  laatsteBody = `Aan: ${ARIADNE_EMAIL}\r\nCC: ${d.email}\r\nOnderwerp: ${subject}\r\n\r\n${body}`;
 
-  if(typeof emailjs==='undefined' || !emailjs.send){ klaar(); return; }
+  // Mailprogramma openen
+  openMail();
 
-  // Eén mail naar Ilse, met de invuller in CC
-  emailjs.send(EMAILJS_SERVICE, INTAKE_TEMPLATE, params)
-    .catch(err=>console.log('EmailJS fout:',err))
-    .finally(klaar);
+  // Bevestigingsscherm tonen (met kopieer-terugval)
+  toonBevestiging(d);
+}
+
+let laatsteMailto = '', laatsteBody = '';
+
+function openMail(){
+  if(laatsteMailto) window.location.href = laatsteMailto;
+}
+
+function kopieerAntwoorden(){
+  const btn = $('kopieerBtn');
+  const done = () => { btn.textContent = '✓ Gekopieerd'; setTimeout(()=>btn.textContent='📋 Antwoorden kopiëren', 2500); };
+  if(navigator.clipboard && navigator.clipboard.writeText){
+    navigator.clipboard.writeText(laatsteBody).then(done).catch(()=>fallbackKopie(done));
+  } else { fallbackKopie(done); }
+}
+function fallbackKopie(done){
+  const ta = document.createElement('textarea');
+  ta.value = laatsteBody; ta.style.position='fixed'; ta.style.opacity='0';
+  document.body.appendChild(ta); ta.select();
+  try{ document.execCommand('copy'); done(); }catch(e){ alert('Kopiëren lukte niet — selecteer de tekst handmatig.'); }
+  document.body.removeChild(ta);
 }
 
 function toonBevestiging(d){
